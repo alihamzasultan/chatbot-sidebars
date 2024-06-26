@@ -1,4 +1,4 @@
-# OPENAI Powered Charbot Layout
+# OPENAI Powered Chatbot Layout
 
 This is an openai powered chatbot with a very attractive layout.
 
