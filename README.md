@@ -4,7 +4,7 @@ Short description of your project.
 
 ## Screenshots
 
-![Screenshot](screenshot.PNG)
+![Screenshot](screenshot1.PNG)
 ![Screenshot 2](screenshot2.png)
 
 ## Installation
