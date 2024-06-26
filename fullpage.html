@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>LinkHome AI Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google Fonts Link For Icons -->
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+  />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0"
+  />
+  <style>
+    .beta-preview-message {
+      display: none;
+      font-size: 10px;
+      color: #888;
+      margin-top: 5px;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .chat-input .input-container {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      text-align: center;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+    }
+    .chatbot {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 16px;
+  font-family: sans-serif;
+  width: calc(100% - 550px); /* Adjust width to fit between sidebars */
+  height: 100vh; /* Full height of the viewport */
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  margin-left: 250px; /* Account for the left sidebar width */
+  margin-right: 300px; /* Account for the right sidebar width */
+}
+
+    .chatbot header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8f9fa;
+      padding: 10px 20px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .chatbot header img {
+      width: 35px;
+      height: 35px;
+      border-radius: 5px;
+    }
+
+    .chatbot header p {
+      flex: 1;
+      margin-left: 10px;
+      font-size: 1rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .chatbot header .close-btn {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .chatbox {
+      overflow-y: auto;
+      flex: 1;
+      padding: 10px 20px;
+    }
+
+    .chatbox .chat-messages {
+      list-style: none;
+    }
+
+    .chatbox .chat {
+      display: flex;
+      list-style: none;
+    }
+
+    .chatbox .outgoing {
+      margin: 20px 0;
+      justify-content: flex-end;
+      font-size: 16px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .chatbox .outgoing span {
+      width: 32px;
+      height: 32px;
+      color: #b0b0b0;
+      cursor: default;
+      text-align: center;
+      line-height: 32px;
+      align-self: flex-end;
+      background: #e0e0e0;
+      border-radius: 4px;
+      margin: 0 0 7px 10px;
+    }
+
+    .chatbox .incoming {
+      margin: 20px 0;
+      display: flex;
+      font-size: 16px;
+      align-items: flex-end;
+    }
+
+    .chatbox .chat p {
+      white-space: pre-wrap;
+      padding: 12px 16px;
+      border-radius: 10px 10px 0 10px;
+      max-width: 75%;
+      color: #1E262F;
+      background: #DEE7ED;
+    }
+
+    .chatbox .incoming p {
+      border-radius: 10px 10px 10px 0;
+      color: #000;
+      background: #f2f2f2;
+    }
+
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #e9ecef;
+      border-radius: 5px;
+      margin-right: 10px;
+      word-wrap: break-word;
+    }
+
+    .chat-input .send-btn {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .popular-questions {
+  font-size: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.popular-questions h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #636363;
+}
+
+.questions-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.question {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.question:hover {
+  background: #e9ecef;
+}
+
+.question p {
+  flex: 1;
+  margin: 0;
+  color: #333;
+}
+
+.question span {
+  font-size: 1.25rem;
+  color: #333;
+  margin-left: auto;
+}
+
+    .question span {
+      margin-left: auto;
+      font-size: 1.25rem;
+      color: #333;
+    }
+
+    .regenerate-button-container {
+      padding: 10px 20px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .regenerate-btn {
+      display: none;
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      color: #a3cae4;
+      border: 1px solid #DEE7ED;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.3;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .chatbot {
+        width: 100vw;
+        height: 100vh;
+        margin-top: 10px;
+        position: fixed;
+        z-index: 9999;
+        background-color: white;
+        margin: 0;
+        padding: 0;
+      }
+
+      .chatbox {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 20px;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chatbot header {
+        margin-top: 10px;
+      }
+      
+    }
+    @media (max-width: 768px) {
+  footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  footer p {
+    margin-bottom: 10px; /* Adjust spacing between paragraphs if needed */
+  }
+}
+.sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px; /* Adjust width as needed */
+      height: 100vh; /* Full height of the viewport */
+      background-color: #f8f9fa;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto; /* Enable scrolling if content exceeds height */
+      z-index: 999; /* Ensure sidebar is above other content */
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+      }
+    }
+
+    .right-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px; /* Adjust width as needed */
+      height: 100vh; /* Full height of the viewport */
+      background-color: #f8f9fa;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto; /* Enable vertical scrolling */
+      z-index: 999; /* Ensure sidebar is above other content */
+    }
+
+    .card {
+      background-color: #ffffff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      .right-sidebar {
+        display: none; /* Hide right sidebar on smaller screens */
+      }
+    }
+
+        /* Your existing styles */
+    /* ... */
+
+    /* New styles for right sidebar */
+        /* New styles for right sidebar */
+        .right-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px; /* Adjust width as needed */
+      height: 100vh; /* Full height of the viewport */
+      background-color: #f8f9fa;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto; /* Enable scrolling if content exceeds height */
+      z-index: 999; /* Ensure sidebar is above other content */
+    }
+    .card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-image {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px 10px 0 0; /* Rounded corners only at the top */
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px 10px 0 0; /* Rounded corners only at the top */
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.card-price {
+  margin: 5px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff; /* Adjust color as needed */
+}
+
+.card-bullets {
+  margin: 10px 0 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.card-bullets li {
+  margin-bottom: 5px;
+  color: #666;
+}
+
+
+
+    .sidebar-heading {
+      font-size: 14px;
+      
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .see-all-btn {
+      display: block;
+      width: 50%;
+      padding: 10px;
+      background-color:#BDCFDB;
+      color: #7f8d97;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 10px;
+    }
+
+    .see-all-btn:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+      .right-sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+      }
+    }
+
+
+    .sidebar-footer {
+    position: absolute;
+    bottom: 0;
+
+    padding: 20px;
+
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar-footer p {
+    margin: 5px 0;
+    color: #333;
+    font-size: 14px;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .footer-logo img {
+    width: 50px;
+    height: auto;
+  }
+
+  .footer-logo span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  </style>
+  </style>
+</head>
+<div class="right-sidebar">
+  <div class="sidebar-heading">
+    We found 1,611 homes in this area. Click the button below to see them all on our search page.
+  </div>
+  <a href="#" class="see-all-btn">See all homes</a>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x200" alt="Card Image" />
+      </div>
+      <h3>Card Title 1</h3>
+      <p class="card-price">$1,200,000</p>
+      <ul class="card-bullets">
+        <li>3 beds • 3.5 baths • 3,335 sqft • House for sale</li>
+        <li>Bullet point 2</li>
+        <li>Bullet point 3</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-content">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x200" alt="Card Image" />
+      </div>
+      <h3>Card Title 2</h3>
+      <p class="card-price">$950,000</p>
+      <ul class="card-bullets">
+        <li>Bullet point 1</li>
+        <li>Bullet point 2</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x200" alt="Card Image" />
+      </div>
+      <h3>Card Title 2</h3>
+      <p class="card-price">$950,000</p>
+      <ul class="card-bullets">
+        <li>Bullet point 1</li>
+        <li>Bullet point 2</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x200" alt="Card Image" />
+      </div>
+      <h3>Card Title 2</h3>
+      <p class="card-price">$950,000</p>
+      <ul class="card-bullets">
+        <li>Bullet point 1</li>
+        <li>Bullet point 2</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x200" alt="Card Image" />
+      </div>
+      <h3>Card Title 2</h3>
+      <p class="card-price">$950,000</p>
+      <ul class="card-bullets">
+        <li>Bullet point 1</li>
+        <li>Bullet point 2</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-content">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x200" alt="Card Image" />
+      </div>
+      <h3>Card Title 2</h3>
+      <p class="card-price">$950,000</p>
+      <ul class="card-bullets">
+        <li>Bullet point 1</li>
+        <li>Bullet point 2</li>
+      </ul>
+    </div>
+  </div>
+  
+
+  <!-- Add more cards as needed -->
+</div>
+<body>
+  <div class="sidebar">
+    <h3>Back</h3>
+    <!-- Add any additional content here -->
+    <div class="sidebar-footer">
+      <p>HomeSearch</p>
+      <p>Reimagine</p>
+      <div class="footer-logo">
+        <img src="https://img.icons8.com/?size=100&id=13246&format=png&color=000000" alt="Logo" style="width: 50px; height: auto;">
+        <span>LinkHome AI</span>
+      </div>
+    </div>
+  </div>
+  <div class="chatbot">
+    <header>
+      <img
+        src="https://img.icons8.com/?size=100&id=13246&format=png&color=000000"
+        width="40px"
+      />
+      <p style="font: bold; font-weight: 700">LinkHome AI</p>
+     
+    </header>
+    <div class="chatbox">
+      <div class="popular-questions">
+        <h3>Ask any question or choose one of the following:</h3>
+        <div class="questions-container">
+          <div class="question">
+            <p>Single family homes near good schools and parks in Irvine.</p>
+            
+          </div>
+          <div class="question">
+            <p>Is Irvine a good place to live for young families?</p>
+            
+          </div>
+          <div class="question">
+            <p>What are the average home prices in Irvine?</p>
+           
+          </div>
+          <div class="question">
+            <p>How can I find rental properties in Irvine?</p>
+            
+          </div>
+          <div class="question">
+            <p>Best neighborhoods in Irvine for families?</p>
+            
+          </div>
+          <div class="question">
+            <p>What amenities does Irvine offer?</p>
+        
+          </div>
+          <div class="question">
+            <p>Are there any parks near Irvine's downtown?</p>
+      
+          </div>
+          <div class="question">
+            <p>How is the commute from Irvine to Los Angeles?</p>
+
+          </div>
+          <div class="question">
+            <p>How is the commute from Irvine to Los Angeles?</p>
+
+          </div>
+        </div>
+      </div>
+      
+      <ul class="chat-messages">
+      
+      </ul>
+    </div>
+    <div class="regenerate-button-container">
+      <button class="regenerate-btn">Regenerate Response</button>
+    </div>
+    <div class="chat-input">
+      <div class="input-container">
+        <input
+          type="text"
+          placeholder="Ask any Question..."
+          spellcheck="false"
+          name="ask_prompt"
+          required
+        />
+        <span class="material-symbols-rounded send-btn">send</span>
+      </div>
+    </div>
+    
+    <div class="beta-preview-message">
+      Beta preview. LinkHome AI can make mistakes. Consider checking important
+      information. See terms of use.
+    </div>
+    
+<footer style="display: flex; justify-content: space-between; padding: 10px 20px; border-top: 1px solid #e9ecef; background: #f8f9fa;">
+    <p style="font-size: 14px;">Not what you’re looking for?<br><a href="#" style="text-decoration: underline; color: #6c757d;">Talk to Flyhomes</a></p>
+    <p style="font-size: 14px;">Flyhomes AI is in beta and may produce mistakes.<br><a href="#" style="text-decoration: underline; color: #6c757d;">See terms of use.</a></p>
+</footer>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script>
+    const closeBtn = document.querySelector(".close-btn");
+const chatbox = document.querySelector(".chatbox .chat-messages");
+const chatInput = document.querySelector(".chat-input input");
+const sendChatBtn = document.querySelector(".send-btn");
+const popularQuestions = document.querySelector(".popular-questions");
+const regenerateBtn = document.querySelector(".regenerate-btn");
+let userMessage = null;
+let lastUserMessage = null;
+let generatingResponse = false;
+let abortController = null;
+const API_KEY = "sk-proj-UDuQIZEKb0DfxyV5TckWT3BlbkFJjallcpfktIAu6vqx8o8W";
+
+const createChatLi = (message, className) => {
+  const chatLi = document.createElement("li");
+  chatLi.classList.add("chat", `${className}`);
+  let chatContent;
+  if (className === "outgoing") {
+    chatContent = `<p></p><span class="material-symbols-outlined">person</span>`;
+  } else {
+    chatContent = `<img src="https://img.icons8.com/?size=100&id=13246&format=png&color=000000" width="32px" height="32px" style="border-radius: 4px; margin-right: 10px;"/><p></p>`;
+  }
+  chatLi.innerHTML = chatContent;
+  chatLi.querySelector("p").textContent = message;
+  return chatLi;
+};
+
+const generateResponse = async (chatElement) => {
+  const API_URL = "https://api.openai.com/v1/chat/completions";
+  const messageElement = chatElement.querySelector("p");
+
+  // Initialize AbortController for this request
+  abortController = new AbortController();
+
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: userMessage }],
+    }),
+    signal: abortController.signal, // Add the abort signal
+  };
+
+  generatingResponse = true;
+  regenerateBtn.textContent = "Stop Generating";
+
+  try {
+    const response = await fetch(API_URL, requestOptions);
+    const data = await response.json();
+
+    if (!generatingResponse) return; // Exit if generation was stopped
+
+    // Clear existing message content (for regeneration)
+    messageElement.textContent = "";
+
+    // Stop ellipsis animation
+    stopEllipsisAnimation();
+
+    // Use typed.js for typing effect
+    const typed = new Typed(messageElement, {
+      strings: [data.choices[0].message.content],
+      typeSpeed: 1, // Set typeSpeed to 1 for maximum speed
+      backSpeed: 0, // Set backSpeed to 0 to disable backspace animation
+      loop: false, // Set loop to false for one-time typing
+      showCursor: false,
+      onComplete: () => {
+        chatbox.scrollTop = chatbox.scrollHeight; // Ensure scroll is at the bottom after typing
+      },
+    });
+
+    generatingResponse = false;
+    regenerateBtn.textContent = "Regenerate Response";
+    regenerateBtn.style.display = "block";
+  } catch (error) {
+    stopEllipsisAnimation();
+    if (error.name === "AbortError") {
+      // messageElement.textContent = "Generation stopped.";
+    } else {
+      messageElement.classList.add("error");
+      messageElement.textContent =
+        "Oops! Something went wrong. Please try again.";
+    }
+  } finally {
+    generatingResponse = false;
+    regenerateBtn.textContent = "Regenerate Response";
+    chatbox.scrollTop = chatbox.scrollHeight; // Ensure scroll is at the bottom
+  }
+};
+
+const handleChat = () => {
+  userMessage = chatInput.value.trim();
+  if (!userMessage) return;
+
+  lastUserMessage = userMessage;
+  chatInput.value = "";
+  chatInput.style.height = `${inputInitHeight}px`;
+
+  chatbox.appendChild(createChatLi(userMessage, "outgoing"));
+  chatbox.scrollTop = chatbox.scrollHeight; // Ensure scroll is at the bottom
+
+  popularQuestions.style.display = "none";
+  
+
+  // Show the beta preview message
+  document.querySelector(".beta-preview-message").style.display = "block";
+
+  setTimeout(() => {
+    const incomingChatLi = createChatLi("", "incoming");
+    chatbox.appendChild(incomingChatLi);
+    chatbox.scrollTop = chatbox.scrollHeight; // Ensure scroll is at the bottom
+    startEllipsisAnimation(incomingChatLi.querySelector("p"));
+    generateResponse(incomingChatLi);
+  }, 600);
+};
+
+const regenerateResponse = () => {
+  if (generatingResponse) {
+    stopGenerating();
+  } else {
+    if (!lastUserMessage) return;
+    userMessage = lastUserMessage;
+
+    popularQuestions.style.display = "none";
+    document.querySelector(".chatbot").style.height = "600px";
+
+    setTimeout(() => {
+      const incomingChatLi = createChatLi("...", "incoming");
+      chatbox.appendChild(incomingChatLi);
+      chatbox.scrollTop = chatbox.scrollHeight; // Ensure scroll is at the bottom
+      startEllipsisAnimation(incomingChatLi.querySelector("p"));
+      generateResponse(incomingChatLi);
+    }, 600);
+  }
+};
+
+const stopGenerating = () => {
+  if (abortController) {
+    abortController.abort(); // Abort the fetch request
+    generatingResponse = false;
+    regenerateBtn.textContent = "Regenerate Response";
+    stopEllipsisAnimation();
+  }
+};
+
+let ellipsisIntervals = [];
+
+const startEllipsisAnimation = (element) => {
+  let dots = 0;
+  const maxDots = 3;
+  const interval = setInterval(() => {
+    if (!generatingResponse) {
+      clearInterval(interval);
+      return;
+    }
+    dots = (dots + 1) % (maxDots + 1);
+    element.textContent = " • • •";
+  }, 1500);
+  ellipsisIntervals.push(interval);
+};
+
+const stopEllipsisAnimation = () => {
+  ellipsisIntervals.forEach(clearInterval);
+  ellipsisIntervals = [];
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const ellipsisElement = document.querySelector(".ellipsis-container");
+  startEllipsisAnimation(ellipsisElement);
+});
+
+popularQuestions.querySelectorAll(".question").forEach((question) => {
+  question.addEventListener("click", () => {
+    const questionText = question.querySelector("p").textContent;
+    chatInput.value = questionText;
+    handleChat();
+  });
+});
+
+chatInput.addEventListener("input", () => {
+  chatInput.style.height = `${inputInitHeight}px`;
+  chatInput.style.height = `${chatInput.scrollHeight}px`;
+});
+
+sendChatBtn.addEventListener("click", handleChat);
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+    e.preventDefault();
+    handleChat();
+  }
+});
+
+regenerateBtn.addEventListener("click", regenerateResponse);
+
+const inputInitHeight = chatInput.scrollHeight;
+
+  </script>
+</body>
+</html>
